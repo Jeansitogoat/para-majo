@@ -25,15 +25,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      /* CAMBIO 1: Permitir scroll si la carta es muy alta */
-      overflow-y: auto; 
+      overflow-y: auto; /* Permite scroll vertical */
       overflow-x: hidden;
       position: relative;
-      padding: 20px; /* Un poco de espacio arriba y abajo */
+      padding: 20px 10px; /* Margen para que no pegue a los bordes en móvil */
     }
 
     .background {
-      position: fixed; /* Para que el fondo no se mueva al bajar */
+      position: fixed;
       width: 100%;
       height: 100%;
       z-index: 0;
@@ -62,7 +61,7 @@
       z-index: 10;
       width: 100%;
       max-width: 500px;
-      margin: auto; /* Centrado */
+      margin: auto;
     }
 
     .lock-screen {
@@ -145,15 +144,15 @@
 
     .letter-content {
       display: none;
-      background: rgba(30, 41, 59, 0.9); /* Un poco más oscuro para leer mejor */
+      background: rgba(30, 41, 59, 0.95); /* Fondo un poco más opaco */
       backdrop-filter: blur(25px);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 24px;
-      padding: 2rem; /* Padding ajustado */
+      padding: 2.5rem 2rem;
       text-align: center;
       box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
       animation: fadeUp 1s ease forwards;
-      margin-bottom: 20px; /* Espacio al final */
+      margin-bottom: 30px; /* Margen inferior para scrollear */
     }
 
     .letter-header {
@@ -212,6 +211,7 @@
       font-weight: 500;
     }
 
+    /* --- CAMBIOS EN LA FOTO --- */
     .photo-container {
       margin-bottom: 1.5rem;
       position: relative;
@@ -219,22 +219,18 @@
       background: linear-gradient(135deg, var(--accent), var(--secondary));
       border-radius: 18px;
       box-shadow: 0 10px 30px -5px rgba(236, 72, 153, 0.4);
-      /* CAMBIO 2: Evitar que la foto ocupe demasiado espacio */
-      max-width: 100%;
-      overflow: hidden; 
+      /* Quitamos max-width y overflow hidden que recortaban */
     }
 
     .couple-photo {
       width: 100%;
-      /* CAMBIO 2: Limitar altura y ajustar imagen */
-      max-height: 350px; 
-      object-fit: cover; 
-      object-position: center; /* Centrar la parte importante */
+      height: auto; /* Altura automática para que se vea completa */
       border-radius: 14px;
       display: block;
       filter: sepia(10%) contrast(105%);
       transition: transform 0.3s ease;
     }
+    /* -------------------------- */
 
     .couple-photo:hover { transform: scale(1.02); }
 
@@ -353,7 +349,6 @@
         lockScreen.style.display = 'none';
         letter.style.display = 'block';
         startHeartRain();
-        // Iniciar animación del contador
         animateValue("daysCounter", "2023-09-17"); 
       }, 500);
     }, 3200);

@@ -173,25 +173,37 @@
       color: #e2e8f0;
       margin-bottom: 1rem;
     }
-
+    
+    /* ESTILOS DEL CONTADOR */
     .days-container {
-      margin-bottom: 2rem;
+      margin: 1.5rem 0;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .counter-title {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 5px;
+      font-family: 'Fira Code', monospace;
     }
 
     .days-number {
-      font-size: 2.5rem;
-      font-weight: 700;
+      font-size: 3rem;
+      font-weight: 800;
       background: linear-gradient(135deg, var(--accent), var(--secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: block;
+      line-height: 1;
     }
 
-    .days-text {
-      font-family: 'Fira Code', monospace;
-      font-size: 0.8rem;
-      color: #94a3b8;
-      letter-spacing: 1px;
+    .days-label {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      font-weight: 500;
     }
 
     .photo-container {
@@ -250,11 +262,16 @@
 </div>
 
 <div class="container">
+  
   <div id="lockScreen" class="lock-screen">
     <div class="lock-icon">🔒</div>
     <div class="title">Mensaje Encriptado</div>
-    <div class="subtitle">Destino: María José | Algoritmo: JP Y MJ</div>
-    <button id="decryptBtn" class="btn-open">Desencriptar</button>
+    <div class="subtitle">Destino: María José | Algoritmo: JP & MJ</div>
+    
+    <button id="decryptBtn" class="btn-open">
+      Desencriptar
+    </button>
+
     <div id="loader" class="loader-container">
       <div class="loading-text" id="loadingText">Iniciando protocolo...</div>
       <div class="progress-bar">
@@ -265,15 +282,18 @@
 
   <div id="letter" class="letter-content">
     <div class="letter-header">14.02.2026 • San Valentín</div>
+    
     <div class="letter-body">
       <h1>Mi Valentine para <span style="color:var(--accent)">Siempre</span></h1>
+      
       <p class="message-text">
-        Deseo para la eternidad que siempre seas tú. A mi puro estilo, esto quedara para la eternidad, una prueba de que nuestro amor es una constante en mi vida, siempre fue real, jamás desaparecerá y te prometo que nunca te dejaré sola.
+        Deseo para la eternidad que siempre seas tú. A mi puro estilo, esto quedará para la eternidad: una prueba de que nuestro amor es una constante en mi vida, siempre fue real, jamás desaparecerá y nunca te dejaré sola.
       </p>
 
       <div class="days-container">
-        <span class="days-number" id="daysCounter">0</span>
-        <div class="days-text">días eligiéndote</div>
+        <div class="counter-title">Tiempo juntos desde el 17/09/2023</div>
+        <span id="daysCounter" class="days-number">0</span>
+        <span class="days-label">Días siéndolo todo</span>
       </div>
 
       <div class="photo-container">
@@ -286,52 +306,89 @@
       </div>
     </div>
   </div>
+
 </div>
 
 <script>
-const decryptBtn = document.getElementById('decryptBtn');
-const lockScreen = document.getElementById('lockScreen');
-const letter = document.getElementById('letter');
-const loader = document.getElementById('loader');
-const progressFill = document.getElementById('progressFill');
-const loadingText = document.getElementById('loadingText');
+  const decryptBtn = document.getElementById('decryptBtn');
+  const lockScreen = document.getElementById('lockScreen');
+  const letter = document.getElementById('letter');
+  const loader = document.getElementById('loader');
+  const progressFill = document.getElementById('progressFill');
+  const loadingText = document.getElementById('loadingText');
 
-decryptBtn.addEventListener('click', () => {
-  decryptBtn.style.display = 'none';
-  loader.style.display = 'block';
+  const steps = [
+    "Verificando huella digital...",
+    "Desencriptando 'Te Amo'...",
+    "Calculando tiempo juntos...",
+    "Acceso concedido: PARA SIEMPRE"
+  ];
 
-  setTimeout(() => progressFill.style.width = '100%', 500);
+  decryptBtn.addEventListener('click', () => {
+    decryptBtn.style.display = 'none';
+    loader.style.display = 'block';
 
-  setTimeout(() => {
-    lockScreen.style.display = 'none';
-    letter.style.display = 'block';
-    startDaysCounter();
-  }, 3000);
-});
+    setTimeout(() => { progressFill.style.width = '30%'; loadingText.innerText = steps[1]; }, 600);
+    setTimeout(() => { progressFill.style.width = '65%'; loadingText.innerText = steps[2]; }, 1600);
+    setTimeout(() => { progressFill.style.width = '100%'; loadingText.innerText = steps[3]; }, 2500);
 
-function startDaysCounter() {
-  const startDate = new Date("2023-09-17T00:00:00");
-  const today = new Date();
-  const diffTime = today - startDate;
-  const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    setTimeout(() => {
+      lockScreen.style.transform = 'scale(0.9) translateY(-20px)';
+      lockScreen.style.opacity = '0';
+      
+      setTimeout(() => {
+        lockScreen.style.display = 'none';
+        letter.style.display = 'block';
+        startHeartRain();
+        animateValue("daysCounter", "2023-09-17"); // Iniciar contador
+      }, 500);
+    }, 3200);
+  });
 
-  const counterElement = document.getElementById("daysCounter");
-  let current = 0;
-  const duration = 2000;
-  const increment = totalDays / (duration / 16);
-
-  function animate() {
-    current += increment;
-    if (current < totalDays) {
-      counterElement.innerText = Math.floor(current);
-      requestAnimationFrame(animate);
-    } else {
-      counterElement.innerText = totalDays;
-    }
+  function startHeartRain() {
+    setInterval(() => {
+      const heart = document.createElement('div');
+      heart.innerText = Math.random() > 0.5 ? "❤️" : "✨";
+      heart.style.position = 'fixed';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.top = '-50px';
+      heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+      heart.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+      heart.style.zIndex = '50';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }, 300);
   }
-  animate();
-}
-</script>
 
+  // Lógica del contador de días
+  function animateValue(id, startDateStr) {
+    const start = new Date(startDateStr);
+    const now = new Date();
+    const difference = now.getTime() - start.getTime();
+    const days = Math.floor(difference / (1000 * 3600 * 24)); // Cálculo de días
+
+    const obj = document.getElementById(id);
+    let current = 0;
+    const duration = 2000; // 2 segundos de animación
+    const stepTime = Math.abs(Math.floor(duration / days));
+    
+    const timer = setInterval(() => {
+      current += Math.ceil(days / 50); // Incremento más rápido
+      if (current >= days) {
+        current = days;
+        clearInterval(timer);
+      }
+      obj.innerHTML = current;
+    }, 30);
+  }
+
+  const styleSheet = document.createElement("style");
+  styleSheet.innerText = `
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+</script>
 </body>
 </html>

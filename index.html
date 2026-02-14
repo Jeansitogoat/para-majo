@@ -25,15 +25,20 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+      /* CAMBIO 1: Permitir scroll si la carta es muy alta */
+      overflow-y: auto; 
+      overflow-x: hidden;
       position: relative;
+      padding: 20px; /* Un poco de espacio arriba y abajo */
     }
 
     .background {
-      position: absolute;
+      position: fixed; /* Para que el fondo no se mueva al bajar */
       width: 100%;
       height: 100%;
       z-index: 0;
+      top: 0;
+      left: 0;
       background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 100%);
     }
 
@@ -55,9 +60,9 @@
     .container {
       position: relative;
       z-index: 10;
-      width: 90%;
+      width: 100%;
       max-width: 500px;
-      perspective: 1000px;
+      margin: auto; /* Centrado */
     }
 
     .lock-screen {
@@ -140,14 +145,15 @@
 
     .letter-content {
       display: none;
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(30, 41, 59, 0.9); /* Un poco más oscuro para leer mejor */
       backdrop-filter: blur(25px);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 24px;
-      padding: 2.5rem;
+      padding: 2rem; /* Padding ajustado */
       text-align: center;
       box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
       animation: fadeUp 1s ease forwards;
+      margin-bottom: 20px; /* Espacio al final */
     }
 
     .letter-header {
@@ -160,44 +166,44 @@
     }
 
     .letter-body h1 {
-      font-size: 2.2rem;
-      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      margin-bottom: 1rem;
       line-height: 1.2;
       color: #fff;
       text-shadow: 0 0 10px rgba(255,255,255,0.3);
     }
 
     .message-text {
-      font-size: 1.05rem;
-      line-height: 1.8;
+      font-size: 1rem;
+      line-height: 1.6;
       color: #e2e8f0;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
     
-    /* ESTILOS DEL CONTADOR */
     .days-container {
       margin: 1.5rem 0;
-      padding: 10px;
+      padding: 15px;
       background: rgba(255,255,255,0.05);
       border-radius: 15px;
       border: 1px solid rgba(255,255,255,0.1);
     }
 
     .counter-title {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #94a3b8;
       margin-bottom: 5px;
       font-family: 'Fira Code', monospace;
+      text-transform: uppercase;
     }
 
     .days-number {
-      font-size: 3rem;
+      font-size: 2.5rem;
       font-weight: 800;
       background: linear-gradient(135deg, var(--accent), var(--secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: block;
-      line-height: 1;
+      line-height: 1.2;
     }
 
     .days-label {
@@ -207,28 +213,35 @@
     }
 
     .photo-container {
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       position: relative;
       padding: 5px;
       background: linear-gradient(135deg, var(--accent), var(--secondary));
       border-radius: 18px;
       box-shadow: 0 10px 30px -5px rgba(236, 72, 153, 0.4);
+      /* CAMBIO 2: Evitar que la foto ocupe demasiado espacio */
+      max-width: 100%;
+      overflow: hidden; 
     }
 
     .couple-photo {
       width: 100%;
+      /* CAMBIO 2: Limitar altura y ajustar imagen */
+      max-height: 350px; 
+      object-fit: cover; 
+      object-position: center; /* Centrar la parte importante */
       border-radius: 14px;
       display: block;
-      filter: sepia(20%) contrast(110%);
+      filter: sepia(10%) contrast(105%);
       transition: transform 0.3s ease;
     }
 
-    .couple-photo:hover { transform: scale(1.01); }
+    .couple-photo:hover { transform: scale(1.02); }
 
     .signature {
       font-family: 'Hurricane', cursive;
       font-size: 2rem;
-      margin-top: 1.5rem;
+      margin-top: 1rem;
       color: var(--accent);
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
       transform: rotate(-2deg);
@@ -340,7 +353,8 @@
         lockScreen.style.display = 'none';
         letter.style.display = 'block';
         startHeartRain();
-        animateValue("daysCounter", "2023-09-17"); // Iniciar contador
+        // Iniciar animación del contador
+        animateValue("daysCounter", "2023-09-17"); 
       }, 500);
     }, 3200);
   });
@@ -360,20 +374,18 @@
     }, 300);
   }
 
-  // Lógica del contador de días
   function animateValue(id, startDateStr) {
     const start = new Date(startDateStr);
     const now = new Date();
     const difference = now.getTime() - start.getTime();
-    const days = Math.floor(difference / (1000 * 3600 * 24)); // Cálculo de días
+    const days = Math.floor(difference / (1000 * 3600 * 24)); 
 
     const obj = document.getElementById(id);
     let current = 0;
-    const duration = 2000; // 2 segundos de animación
-    const stepTime = Math.abs(Math.floor(duration / days));
+    const duration = 2000;
     
     const timer = setInterval(() => {
-      current += Math.ceil(days / 50); // Incremento más rápido
+      current += Math.ceil(days / 50); 
       if (current >= days) {
         current = days;
         clearInterval(timer);

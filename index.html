@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Majo | De: JP</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Montserrat:wght@300;500;700&family=Hurricane&display=swap" rel="stylesheet">
+  
+  <style>
+    /* VARIABLES Y RESET */
+    :root {
+      --bg-color: #0f172a; /* Azul noche profundo */
+      --accent: #ec4899;    /* Rosa neón elegante */
+      --secondary: #6366f1; /* Índigo */
+      --glass: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f8fafc;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* FONDO ANIMADO (PARTÍCULAS) */
+    .background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 100%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: float 10s infinite ease-in-out;
+    }
+    .orb-1 { width: 300px; height: 300px; background: var(--accent); top: -50px; left: -50px; }
+    .orb-2 { width: 400px; height: 400px; background: var(--secondary); bottom: -100px; right: -100px; animation-delay: -5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, 50px); }
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 90%;
+      max-width: 500px;
+      perspective: 1000px;
+    }
+
+    /* PANTALLA DE BLOQUEO (EL SOBRE MODERNO) */
+    .lock-screen {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      padding: 3rem 2rem;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .lock-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 0 15px var(--accent));
+      animation: pulse 2s infinite;
+    }
+
+    .title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .btn-open {
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      color: white;
+      border: none;
+      padding: 1rem 2.5rem;
+      font-size: 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 1px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+    }
+
+    .btn-open:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(236, 72, 153, 0.6);
+    }
+
+    /* BARRA DE CARGA (DECRIFRANDO) */
+    .loader-container {
+      display: none;
+      margin-top: 1.5rem;
+    }
+    
+    .loading-text {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      text-align: left;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 2.5s ease-in-out;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* LA CARTA (CONTENIDO REAL) */
+    .letter-content {
+      display: none;
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 2.5rem;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
+      animation: fadeUp 1s ease forwards;
+    }
+
+    .letter-header {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .letter-body h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+
+    .message-text {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: #e2e8f0;
+      margin-bottom: 2rem;
+    }
+
+    /* BLOQUE DE CÓDIGO ROMÁNTICO */
+    .code-block {
+      background: #0b1120;
+      padding: 1.2rem;
+      border-radius: 12px;
+      text-align: left;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+      border-left: 3px solid var(--accent);
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .c-keyword { color: #c678dd; } 
+    .c-func { color: #61afef; } 
+    .c-str { color: #98c379; } 
+    .c-comment { color: #5c6370; font-style: italic; }
+
+    /* FIRMA ESTILIZADA */
+    .signature {
+      font-family: 'Hurricane', cursive;
+      font-size: 2rem;
+      margin-top: 1.5rem;
+      color: var(--accent);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      transform: rotate(-2deg);
+    }
+
+    .signature-sub {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 5px;
+      display: block;
+      transform: rotate(2deg); /* Contrarrestar rotación */
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MEDIA QUERIES */
+    @media (max-width: 480px) {
+      .title { font-size: 1.5rem; }
+      .lock-icon { font-size: 3rem; }
+      .letter-body h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <div class="container">
+    
+    <div id="lockScreen" class="lock-screen">
+      <div class="lock-icon">🔒</div>
+      <div class="title">Mensaje Encriptado</div>
+      <div class="subtitle">Destino: María José | Algoritmo: Eterno</div>
+      
+      <button id="decryptBtn" class="btn-open">
+        Desencriptar
+      </button>
+
+      <div id="loader" class="loader-container">
+        <div class="loading-text" id="loadingText">Iniciando protocolo...</div>
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="letter" class="letter-content">
+      <div class="letter-header">14.02.2026 • San Valentín</div>
+      
+      <div class="letter-body">
+        <h1>Mi Valentine para <span style="color:var(--accent)">Siempre</span></h1>
+        
+        <p class="message-text">
+          Deseo para la eternidad que siempre seas tú. Esto no es solo una página web, es una prueba de que nuestro amor es una constante en mi vida: siempre fue real, es real y jamás desaparecerá.
+        </p>
+
+        <div class="code-block">
+          <span class="c-comment">// Configuración del sistema emocional</span><br>
+          <span class="c-keyword">const</span> <span class="c-func">us</span> = {<br>
+          &nbsp;&nbsp;amor: <span class="c-str">"Infinito"</span>,<br>
+          &nbsp;&nbsp;promesa: <span class="c-str">"Eternidad"</span>,<br>
+          &nbsp;&nbsp;real: <span class="c-keyword">true</span>,<br>
+          &nbsp;&nbsp;end: <span class="c-keyword">null</span> <span class="c-comment">// Nunca termina</span><br>
+          };
+        </div>
+
+        <div class="signature">
+          Jean Pierre
+          <span class="signature-sub">- JP -</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const decryptBtn = document.getElementById('decryptBtn');
+    const lockScreen = document.getElementById('lockScreen');
+    const letter = document.getElementById('letter');
+    const loader = document.getElementById('loader');
+    const progressFill = document.getElementById('progressFill');
+    const loadingText = document.getElementById('loadingText');
+
+    const steps = [
+      "Verificando huella digital...",
+      "Desencriptando 'Te Amo'...",
+      "Compilando recuerdos...",
+      "Acceso concedido: PARA SIEMPRE"
+    ];
+
+    decryptBtn.addEventListener('click', () => {
+      decryptBtn.style.display = 'none';
+      loader.style.display = 'block';
+
+      // Animación de carga
+      setTimeout(() => { progressFill.style.width = '30%'; loadingText.innerText = steps[1]; }, 600);
+      setTimeout(() => { progressFill.style.width = '65%'; loadingText.innerText = steps[2]; }, 1600);
+      setTimeout(() => { progressFill.style.width = '100%'; loadingText.innerText = steps[3]; }, 2500);
+
+      // Mostrar carta
+      setTimeout(() => {
+        lockScreen.style.transform = 'scale(0.9) translateY(-20px)';
+        lockScreen.style.opacity = '0';
+        
+        setTimeout(() => {
+          lockScreen.style.display = 'none';
+          letter.style.display = 'block';
+          startHeartRain();
+        }, 500);
+      }, 3200);
+    });
+
+    // Lluvia de corazones
+    function startHeartRain() {
+      const colors = ['#ec4899', '#8b5cf6', '#f43f5e'];
+      
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.innerText = Math.random() > 0.5 ? "❤️" : "✨";
+        heart.style.position = 'fixed';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = '-50px';
+        heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+        heart.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+        heart.style.zIndex = '50';
+        document.body.appendChild(heart);
+        
+        setTimeout(() => heart.remove(), 5000);
+      }, 300);
+    }
+
+    // CSS dinámico para la caída
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = `
+      @keyframes fall {
+        to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+  </script>
+</body>
+</html>
